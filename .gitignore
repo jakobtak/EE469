@@ -1,0 +1,6 @@
+# Windows folder metadata
+desktop.ini
+
+# Backup files
+*.bak
+*.bak.*
