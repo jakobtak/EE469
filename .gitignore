@@ -18,3 +18,6 @@ work/
 transcript
 *.wlf
 vsim_stacktrace.vstf
+
+# Mac
+.DS_Store
