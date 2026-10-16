@@ -84,3 +84,43 @@ module decoder5_32 (out, addr, enable);
   and #50 (out[30], enable, high[7], low[2]);
   and #50 (out[31], enable, high[7], low[3]);
 endmodule
+
+// synthesis translate_off
+// Test sequence (check the expected values in the waveform):
+// 1. Set enable=0 and addr=0; all outputs should be 0.
+// 2. Set enable=1 and step addr from 0 through 31; only out[addr] should be 1.
+// 3. Set enable=0 again; all outputs should return to 0, then stop.
+`timescale 1ns/10ps
+module decoder5_32_testbench;
+  parameter ClockDelay = 5000;
+  logic [4:0] addr;
+  logic enable;
+  logic [31:0] out;
+  integer i;
+  logic clk;
+
+  decoder5_32 dut (.out, .addr, .enable);
+
+  initial begin
+    clk <= 0;
+    forever #(ClockDelay/2) clk <= ~clk;
+  end
+
+  initial begin
+    enable <= 0;
+    addr <= 0;
+    @(posedge clk); // All outputs should be 0.
+
+    enable <= 1;
+    for (i = 0; i < 32; i++) begin
+      addr <= i;
+      @(posedge clk); // Only out[addr] should be 1.
+    end
+
+    enable <= 0;
+    @(posedge clk); // All outputs should return to 0.
+    @(negedge clk); // Let the last rising-edge update finish.
+    $stop;
+  end
+endmodule
+// synthesis translate_on

@@ -63,3 +63,42 @@ module mux32_1 (out, in, sel);
   // 2 inputs -> 1 output
   mux2_1 mux_last (out, {mux_4_to_2[1], mux_4_to_2[0]}, sel[4]);
 endmodule
+
+// synthesis translate_off
+// Test sequence (check the expected values in the waveform):
+// 1. Move a single 1 through all 32 input bits; for each bit, try every sel.
+//    out should be 1 only when sel selects that bit (j equals i).
+// 2. Set all input bits to 0; out should be 0.
+// 3. Set all input bits to 1; out should be 1, then stop.
+`timescale 1ns/10ps
+module mux32_1_testbench;
+  parameter ClockDelay = 5000;
+  logic [31:0] in;
+  logic [4:0] sel;
+  logic out;
+  integer i, j;
+  logic clk;
+
+  mux32_1 dut (.out, .in, .sel);
+
+  initial begin
+    clk <= 0;
+    forever #(ClockDelay/2) clk <= ~clk;
+  end
+
+  initial begin
+    // i chooses which input bit is 1; j chooses which bit the mux reads.
+    for (i = 0; i < 32; i++) begin
+      in <= 32'b1 << i;
+      for (j = 0; j < 32; j++) begin
+        sel <= j;
+        @(posedge clk); // out = 1 when j equals i; otherwise out = 0.
+      end
+    end
+    in <= 32'h00000000; @(posedge clk); // out = 0
+    in <= 32'hFFFFFFFF; @(posedge clk); // out = 1
+    @(negedge clk); // Let the last rising-edge update finish.
+    $stop;
+  end
+endmodule
+// synthesis translate_on
