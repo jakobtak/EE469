@@ -4,3 +4,17 @@ desktop.ini
 # Backup files
 *.bak
 *.bak.*
+
+# Quartus generated files
+db/
+incremental_db/
+output_files/
+/simulation/
+*.qws
+c5_pin_model_dump.txt
+
+# ModelSim generated files
+work/
+transcript
+*.wlf
+vsim_stacktrace.vstf
