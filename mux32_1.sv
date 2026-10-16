@@ -10,32 +10,10 @@ module mux32_1 (out, in, sel);
   wire [3:0] mux_8_to_4;
   wire [1:0] mux_4_to_2;
 
-  /* Original generate loops (reference only):
-  genvar i;
-  generate
-    // 32 inputs -> 16 outputs
-    for (i = 0; i < 16; i = i + 1) begin: gen_16
-      mux2_1 mux (mux_32_to_16[i], in[2*i], in[2*i+1], sel[0]);
-    end
-
-    // 16 inputs -> 8 outputs
-    for (i = 0; i < 8; i = i + 1) begin: gen_8
-      mux2_1 mux (mux_16_to_8[i], mux_32_to_16[2*i], mux_32_to_16[2*i+1], sel[1]);
-    end
-
-    // 8 inputs -> 4 outputs
-    for (i = 0; i < 4; i = i + 1) begin: gen_4
-      mux2_1 mux (mux_8_to_4[i], mux_16_to_8[2*i], mux_16_to_8[2*i+1], sel[2]);
-    end
-
-    // 4 inputs -> 2 outputs
-    for (i = 0; i < 2; i = i + 1) begin: gen_2
-      mux2_1 mux (mux_4_to_2[i], mux_8_to_4[2*i], mux_8_to_4[2*i+1], sel[3]);
-    end
-  endgenerate
-  */
-
   // 32 inputs -> 16 outputs; explicit constant indices.
+  // for (i = 0; i < 16; i = i + 1) begin: gen_16
+  //   mux2_1 mux (mux_32_to_16[i], in[2*i], in[2*i+1], sel[0]);
+  // end
   mux2_1 mux_16_0 (mux_32_to_16[0], in[0], in[1], sel[0]);
   mux2_1 mux_16_1 (mux_32_to_16[1], in[2], in[3], sel[0]);
   mux2_1 mux_16_2 (mux_32_to_16[2], in[4], in[5], sel[0]);
@@ -54,6 +32,9 @@ module mux32_1 (out, in, sel);
   mux2_1 mux_16_15 (mux_32_to_16[15], in[30], in[31], sel[0]);
 
   // 16 inputs -> 8 outputs; explicit constant indices.
+  // for (i = 0; i < 8; i = i + 1) begin: gen_8
+  //   mux2_1 mux (mux_16_to_8[i], mux_32_to_16[2*i], mux_32_to_16[2*i+1], sel[1]);
+  // end
   mux2_1 mux_8_0 (mux_16_to_8[0], mux_32_to_16[0], mux_32_to_16[1], sel[1]);
   mux2_1 mux_8_1 (mux_16_to_8[1], mux_32_to_16[2], mux_32_to_16[3], sel[1]);
   mux2_1 mux_8_2 (mux_16_to_8[2], mux_32_to_16[4], mux_32_to_16[5], sel[1]);
@@ -64,12 +45,18 @@ module mux32_1 (out, in, sel);
   mux2_1 mux_8_7 (mux_16_to_8[7], mux_32_to_16[14], mux_32_to_16[15], sel[1]);
 
   // 8 inputs -> 4 outputs; explicit constant indices.
+  // for (i = 0; i < 4; i = i + 1) begin: gen_4
+  //   mux2_1 mux (mux_8_to_4[i], mux_16_to_8[2*i], mux_16_to_8[2*i+1], sel[2]);
+  // end
   mux2_1 mux_4_0 (mux_8_to_4[0], mux_16_to_8[0], mux_16_to_8[1], sel[2]);
   mux2_1 mux_4_1 (mux_8_to_4[1], mux_16_to_8[2], mux_16_to_8[3], sel[2]);
   mux2_1 mux_4_2 (mux_8_to_4[2], mux_16_to_8[4], mux_16_to_8[5], sel[2]);
   mux2_1 mux_4_3 (mux_8_to_4[3], mux_16_to_8[6], mux_16_to_8[7], sel[2]);
 
   // 4 inputs -> 2 outputs; explicit constant indices.
+  // for (i = 0; i < 2; i = i + 1) begin: gen_2
+  //   mux2_1 mux (mux_4_to_2[i], mux_8_to_4[2*i], mux_8_to_4[2*i+1], sel[3]);
+  // end
   mux2_1 mux_2_0 (mux_4_to_2[0], mux_8_to_4[0], mux_8_to_4[1], sel[3]);
   mux2_1 mux_2_1 (mux_4_to_2[1], mux_8_to_4[2], mux_8_to_4[3], sel[3]);
 

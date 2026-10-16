@@ -11,6 +11,9 @@ module decoder5_32 (out, addr, enable);
 
   // #50 = 50 ps delay
   // Invert all 5 address bits
+  // for (i = 0; i < 5; i = i + 1) begin: invert_addr
+  //   not #50 (addr_n[i], addr[i]);
+  // end
   not #50 (addr_n[0], addr[0]); 
   not #50 (addr_n[1], addr[1]);
   not #50 (addr_n[2], addr[2]);
@@ -18,12 +21,23 @@ module decoder5_32 (out, addr, enable);
   not #50 (addr_n[4], addr[4]);
 
   // Select one of 4 positions using addr[1:0]
+  // for (i = 0; i < 4; i = i + 1) begin: decode_low
+  //   and #50 (low[i],
+  //            i[1] ? addr[1] : addr_n[1],
+  //            i[0] ? addr[0] : addr_n[0]);
+  // end
   and #50 (low[0], addr_n[1], addr_n[0]);
   and #50 (low[1], addr_n[1], addr[0]);
   and #50 (low[2], addr[1], addr_n[0]);
   and #50 (low[3], addr[1], addr[0]);
 
   // Select one of 8 groups using addr[4:2]
+  // for (i = 0; i < 8; i = i + 1) begin: decode_high
+  //   and #50 (high[i],
+  //            i[2] ? addr[4] : addr_n[4],
+  //            i[1] ? addr[3] : addr_n[3],
+  //            i[0] ? addr[2] : addr_n[2]);
+  // end
   and #50 (high[0], addr_n[4], addr_n[3], addr_n[2]);
   and #50 (high[1], addr_n[4], addr_n[3], addr[2]);
   and #50 (high[2], addr_n[4], addr[3], addr_n[2]);
@@ -33,16 +47,10 @@ module decoder5_32 (out, addr, enable);
   and #50 (high[6], addr[4], addr[3], addr_n[2]);
   and #50 (high[7], addr[4], addr[3], addr[2]);
 
-  /* Original generate loop (reference only):
-  genvar i;
-  generate
-    for (i = 0; i < 32; i = i + 1) begin: decode_out
-      and #50 (out[i], enable, high[i / 4], low[i % 4]); // i/4: upper 3 bits; i%4: lower 2 bits
-    end
-  endgenerate
-  */
-
   // Explicit output wiring: each high group contains four low positions.
+  // for (i = 0; i < 32; i = i + 1) begin: decode_out
+  //   and #50 (out[i], enable, high[i / 4], low[i % 4]); // i/4: upper 3 bits; i%4: lower 2 bits
+  // end
   and #50 (out[0], enable, high[0], low[0]);
   and #50 (out[1], enable, high[0], low[1]);
   and #50 (out[2], enable, high[0], low[2]);
