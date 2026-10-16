@@ -1,3 +1,5 @@
+`timescale 1ps/1ps
+
 module D_FF (q, d, reset, clk);
   output reg q;
   input d, reset, clk;

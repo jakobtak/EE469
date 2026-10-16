@@ -1,3 +1,5 @@
+`timescale 1ps/1ps
+
 module mux2_1 (out, a, b, sel);
   output out;
   input a, b, sel;

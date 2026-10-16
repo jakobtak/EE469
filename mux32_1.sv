@@ -1,3 +1,5 @@
+`timescale 1ps/1ps
+
 module mux32_1 (out, in, sel);
   output out;
   input [31:0] in;

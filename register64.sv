@@ -1,3 +1,5 @@
+`timescale 1ps/1ps
+
 module register64 (q, d, enable, reset, clk);
   output [63:0] q; // Stored data
   input [63:0] d;  // New data

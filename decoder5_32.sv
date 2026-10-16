@@ -1,3 +1,5 @@
+`timescale 1ps/1ps
+
 module decoder5_32 (out, addr, enable);
   output [31:0] out;
   input [4:0] addr;
