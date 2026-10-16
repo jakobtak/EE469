@@ -29,15 +29,15 @@ module regfile (ReadData1,
   genvar xi, bi;
   generate
     // Store X0 through X30
-    for (xi = 0; xi < 31; xi++) begin: gen_registers
+    for (xi = 0; xi < 31; xi++) begin
       register64 reg64 (registers[xi], WriteData, write_enable[xi], 1'b0, clk); // Reset held low
     end
 
     // Two read muxes per bit
-    for (bi = 0; bi < 64; bi++) begin: gen_read_bits
+    for (bi = 0; bi < 64; bi++) begin
       wire [31:0] mux_in;
 
-      for (xi = 0; xi < 32; xi++) begin: gen_mux_inputs
+      for (xi = 0; xi < 32; xi++) begin
         assign mux_in[xi] = registers[xi][bi]; // Same bit from all registers
       end
 

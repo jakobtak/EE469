@@ -11,7 +11,7 @@ module mux32_1 (out, in, sel);
   wire [1:0] mux_4_to_2;
 
   // 32 inputs -> 16 outputs; explicit constant indices.
-  // for (i = 0; i < 16; i++) begin: gen_16
+  // for (i = 0; i < 16; i++) begin
   //   mux2_1 mux (mux_32_to_16[i], {in[2*i+1], in[2*i]}, sel[0]);
   // end
   mux2_1 mux_16_0 (mux_32_to_16[0], {in[1], in[0]}, sel[0]);
@@ -32,7 +32,7 @@ module mux32_1 (out, in, sel);
   mux2_1 mux_16_15 (mux_32_to_16[15], {in[31], in[30]}, sel[0]);
 
   // 16 inputs -> 8 outputs; explicit constant indices.
-  // for (i = 0; i < 8; i++) begin: gen_8
+  // for (i = 0; i < 8; i++) begin
   //   mux2_1 mux (mux_16_to_8[i], {mux_32_to_16[2*i+1], mux_32_to_16[2*i]}, sel[1]);
   // end
   mux2_1 mux_8_0 (mux_16_to_8[0], {mux_32_to_16[1], mux_32_to_16[0]}, sel[1]);
@@ -45,7 +45,7 @@ module mux32_1 (out, in, sel);
   mux2_1 mux_8_7 (mux_16_to_8[7], {mux_32_to_16[15], mux_32_to_16[14]}, sel[1]);
 
   // 8 inputs -> 4 outputs; explicit constant indices.
-  // for (i = 0; i < 4; i++) begin: gen_4
+  // for (i = 0; i < 4; i++) begin
   //   mux2_1 mux (mux_8_to_4[i], {mux_16_to_8[2*i+1], mux_16_to_8[2*i]}, sel[2]);
   // end
   mux2_1 mux_4_0 (mux_8_to_4[0], {mux_16_to_8[1], mux_16_to_8[0]}, sel[2]);
@@ -54,7 +54,7 @@ module mux32_1 (out, in, sel);
   mux2_1 mux_4_3 (mux_8_to_4[3], {mux_16_to_8[7], mux_16_to_8[6]}, sel[2]);
 
   // 4 inputs -> 2 outputs; explicit constant indices.
-  // for (i = 0; i < 2; i++) begin: gen_2
+  // for (i = 0; i < 2; i++) begin
   //   mux2_1 mux (mux_4_to_2[i], {mux_8_to_4[2*i+1], mux_8_to_4[2*i]}, sel[3]);
   // end
   mux2_1 mux_2_0 (mux_4_to_2[0], {mux_8_to_4[1], mux_8_to_4[0]}, sel[3]);
