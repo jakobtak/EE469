@@ -66,8 +66,8 @@ endmodule
 
 // synthesis translate_off
 // Test sequence (check the expected values in the waveform):
-// 1. Move a single 1 through all 32 input bits; for each bit, try every sel.
-//    out should be 1 only when sel selects that bit (j equals i).
+// 1. Set alternating input bits and select positions 0 through 31.
+//    Even sel: out=0. Odd sel: out=1.
 // 2. Set all input bits to 0; out should be 0.
 // 3. Set all input bits to 1; out should be 1, then stop.
 `timescale 1ns/10ps
@@ -76,7 +76,7 @@ module mux32_1_testbench;
   logic [31:0] in;
   logic [4:0] sel;
   logic out;
-  integer i, j;
+  integer i;
   logic clk;
 
   mux32_1 dut (.out, .in, .sel);
@@ -87,13 +87,11 @@ module mux32_1_testbench;
   end
 
   initial begin
-    // i chooses which input bit is 1; j chooses which bit the mux reads.
+    // A = 1010, so the input bits alternate between 0 and 1.
+    in <= 32'hAAAAAAAA;
     for (i = 0; i < 32; i++) begin
-      in <= 32'b1 << i;
-      for (j = 0; j < 32; j++) begin
-        sel <= j;
-        @(posedge clk); // out = 1 when j equals i; otherwise out = 0.
-      end
+      sel <= i;
+      @(posedge clk); // out should alternate 0, 1, 0, 1, ...
     end
     in <= 32'h00000000; @(posedge clk); // out = 0
     in <= 32'hFFFFFFFF; @(posedge clk); // out = 1

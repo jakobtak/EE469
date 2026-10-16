@@ -45,7 +45,7 @@ add wave -noupdate -radix hexadecimal /regstim/ReadData2
 add wave -noupdate -divider {Write decoder}
 add wave -noupdate -radix hexadecimal /regstim/dut/write_enable
 add wave -noupdate -divider {Register reset}
-add wave -noupdate -label reset {/regstim/dut/genblk1[0]/reg64/reset}
+add wave -noupdate -label reset {/regstim/dut/gen_registers[0]/reg64/reset}
 add wave -noupdate -divider {Registers X0-X31}
 add wave -noupdate -radix hexadecimal -label X0 {/regstim/dut/registers[0]}
 add wave -noupdate -radix hexadecimal -label X1 {/regstim/dut/registers[1]}
