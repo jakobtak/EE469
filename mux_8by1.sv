@@ -10,8 +10,11 @@ module mux_8by1 (ReadData, ReadRegister, data_out, muxx);
     input logic muxx; // Turns this group on or off.
 
     wire sel2, sel1, sel0, out0, out1, out2, out3, out4, out5, out6, out7;
+    wire [2:0] buffered;
     wire [63:0] o0, o1, o2, o3, o4, o5, o6, o7, OR1, OR2, ORFINAL;
 
+    // add by pass gate to match the NOT delay on each non-inverted address bit.
+    buf #50 buffer [2:0] (buffered, ReadRegister);
     not #50 Sel2 (sel2, ReadRegister[2]);
     not #50 Sel1 (sel1, ReadRegister[1]);
     not #50 Sel0 (sel0, ReadRegister[0]);
@@ -19,13 +22,13 @@ module mux_8by1 (ReadData, ReadRegister, data_out, muxx);
     // These AND gates work out which input matches ReadRegister.
     // Putting muxx in every gate lets the larger mux turn this whole group on or off.
     and #50 Out0 (out0, sel2, sel1, sel0, muxx);
-    and #50 Out1 (out1, sel2, sel1, ReadRegister[0], muxx);
-    and #50 Out2 (out2, sel2, ReadRegister[1], sel0, muxx);
-    and #50 Out3 (out3, sel2, ReadRegister[1], ReadRegister[0], muxx);
-    and #50 Out4 (out4, ReadRegister[2], sel1, sel0, muxx);
-    and #50 Out5 (out5, ReadRegister[2], sel1, ReadRegister[0], muxx);
-    and #50 Out6 (out6, ReadRegister[2], ReadRegister[1], sel0, muxx);
-    and #50 Out7 (out7, ReadRegister[2], ReadRegister[1], ReadRegister[0], muxx);
+    and #50 Out1 (out1, sel2, sel1, buffered[0], muxx);
+    and #50 Out2 (out2, sel2, buffered[1], sel0, muxx);
+    and #50 Out3 (out3, sel2, buffered[1], buffered[0], muxx);
+    and #50 Out4 (out4, buffered[2], sel1, sel0, muxx);
+    and #50 Out5 (out5, buffered[2], sel1, buffered[0], muxx);
+    and #50 Out6 (out6, buffered[2], buffered[1], sel0, muxx);
+    and #50 Out7 (out7, buffered[2], buffered[1], buffered[0], muxx);
 
     // Repeating each select bit 64 times lets it control the whole input value.
     // The AND gates keep the chosen value and turn the other values into zeros.
