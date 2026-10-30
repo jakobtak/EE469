@@ -679,5 +679,8 @@ set_global_assignment -name SYSTEMVERILOG_FILE mux_8by1.sv
 set_global_assignment -name SYSTEMVERILOG_FILE mux_32by1.sv
 set_global_assignment -name SYSTEMVERILOG_FILE mux_64by32by1.sv
 set_global_assignment -name SYSTEMVERILOG_FILE regfile.sv
+set_global_assignment -name SYSTEMVERILOG_FILE full_adder.sv
+set_global_assignment -name SYSTEMVERILOG_FILE add_sub.sv
+set_global_assignment -name SYSTEMVERILOG_FILE alu.sv
 
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
