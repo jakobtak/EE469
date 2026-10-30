@@ -2,9 +2,9 @@ onerror {resume}
 quietly WaveActivateNextPane {} 0
 
 # Add signals.
+add wave -noupdate -radix binary /register_testbench/clk
 add wave -noupdate /register_testbench/Register
 add wave -noupdate /register_testbench/WriteData
-add wave -noupdate /register_testbench/clk
 add wave -noupdate /register_testbench/data_out
 add wave -noupdate /register_testbench/i
 add wave -noupdate /register_testbench/k

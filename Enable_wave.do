@@ -2,7 +2,7 @@ onerror {resume}
 quietly WaveActivateNextPane {} 0
 
 # Add signals.
-add wave -noupdate /Enable_testbench/clk
+add wave -noupdate -radix binary /Enable_testbench/clk
 add wave -noupdate /Enable_testbench/data_out
 add wave -noupdate /Enable_testbench/i
 add wave -noupdate /Enable_testbench/k

@@ -33,5 +33,6 @@ view signals
 
 # Run the simulation.
 run -all
+wave zoom full
 
 # vim: ft=tcl
