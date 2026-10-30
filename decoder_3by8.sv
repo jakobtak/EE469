@@ -8,8 +8,8 @@ module decoder_3by8 (Register, Write_Register, RegWrite);
     input logic [2:0] Write_Register;
     input logic RegWrite;
 
-    logic R0, R1, R2, R3, R4, R5, R6, R7;
-    logic nC, nD, nE;
+    wire R0, R1, R2, R3, R4, R5, R6, R7;
+    wire nC, nD, nE;
 
     not #50 nc (nC, Write_Register[2]);
     not #50 nd (nD, Write_Register[1]);

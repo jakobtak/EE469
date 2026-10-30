@@ -8,8 +8,8 @@ module decoder_5by32 (Register, Write_Register, RegWrite);
     input logic [4:0] Write_Register;
     input logic RegWrite;
 
-    logic nA, nB;
-    logic d1, d2, d3, d4;
+    wire nA, nB;
+    wire d1, d2, d3, d4;
 
     not #50 na (nA, Write_Register[4]);
     not #50 nb (nB, Write_Register[3]);

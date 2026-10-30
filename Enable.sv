@@ -8,7 +8,7 @@ module Enable (data_out, Register, WriteData, reset, clk);
     input logic WriteData;
     input logic Register, reset, clk; // Register turns writing on or off.
 
-    logic change, hold, din, disabled;
+    wire change, hold, din, disabled;
 
     // One AND gate passes the new data, and the other passes the old data back in.
     // The OR gate sends the chosen value to din, which needs to settle before the clock edge.

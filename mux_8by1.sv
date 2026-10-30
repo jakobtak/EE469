@@ -9,8 +9,8 @@ module mux_8by1 (ReadData, ReadRegister, data_out, muxx);
     input logic [7:0][63:0] data_out;
     input logic muxx; // Turns this group on or off.
 
-    logic sel2, sel1, sel0, out0, out1, out2, out3, out4, out5, out6, out7;
-    logic [63:0] o0, o1, o2, o3, o4, o5, o6, o7, OR1, OR2, ORFINAL;
+    wire sel2, sel1, sel0, out0, out1, out2, out3, out4, out5, out6, out7;
+    wire [63:0] o0, o1, o2, o3, o4, o5, o6, o7, OR1, OR2, ORFINAL;
 
     not #50 Sel2 (sel2, ReadRegister[2]);
     not #50 Sel1 (sel1, ReadRegister[1]);

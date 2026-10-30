@@ -4,11 +4,11 @@
 // ReadRegister[4:3] picks a group of eight, and ReadRegister[2:0] picks a value inside it.
 // Splitting it up this way lets the larger mux reuse the smaller one.
 module mux_32by1 (ReadData, ReadRegister, data_out);
-    output logic [63:0] ReadData;
+    output wire [63:0] ReadData;
     input logic [4:0] ReadRegister;
     input logic [31:0][63:0] data_out; // 32 words, 64 bits each.
 
-    logic inverted4, inverted3, mux1, mux2, mux3, mux4;
+    wire inverted4, inverted3, mux1, mux2, mux3, mux4;
     logic [63:0] y1, y2, y3, y4;
 
     not #50 Inverted4 (inverted4, ReadRegister[4]);
