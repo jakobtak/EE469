@@ -1,48 +1,42 @@
-`timescale 1ps/1ps
+`timescale 1ns/10ps
 
-// EE 469 Lab 1: 32 x 64-bit ARM register file.
-// Two combinational read ports; one rising-edge write port.
-// RegWrite enables writing WriteData to the selected register.
-// X31 always reads zero and ignores writes.
-// Built from DFF registers, a write decoder, and read muxes.
-module regfile (ReadData1, 
-                ReadData2, 
-                WriteData,
-                ReadRegister1, 
-                ReadRegister2, 
-                WriteRegister, 
-                RegWrite, 
-                clk);
-                
-  output [63:0] ReadData1, ReadData2;
-  input [63:0] WriteData;
-  input [4:0] ReadRegister1, ReadRegister2, WriteRegister;
-  input RegWrite, clk;
+// This holds 32 register values, with 64 bits in each one.
+// The decoder picks where to write, and the two read muxes pick which values to read.
+// Register 31 always reads as zero, so only the other 31 registers need storage.
+module regfile (
+    ReadData1, ReadData2, WriteData,
+    ReadRegister1, ReadRegister2, WriteRegister, RegWrite, clk
+);
+    output logic [63:0] ReadData1, ReadData2;
+    input logic [4:0] ReadRegister1, ReadRegister2, WriteRegister;
+    input logic [63:0] WriteData;
+    input logic RegWrite, clk;
 
-  wire [31:0] write_enable;
-  wire [63:0] registers [0:31];
+    // There is no reset input here, so registers 0-30 get their starting values when written.
+    logic reset;
+    assign reset = 0; // Keep reset off.
 
-  decoder5_32 write_decoder (write_enable, WriteRegister, RegWrite);
-  assign registers[31] = 64'b0; // X31 is always zero
+    // When RegWrite is 1, the decoder turns on the enable for the chosen register.
+    // Every register gets WriteData, but only the chosen one saves it on a rising clock edge.
+    logic [31:0] Register;
+    decoder_5by32 d (Register, WriteRegister, RegWrite);
 
-  // xi: register index, bi: bit index
-  genvar xi, bi;
-  generate
-    // Store X0 through X30
-    for (xi = 0; xi < 31; xi++) begin: gen_registers
-      register64 reg64 (registers[xi], WriteData, write_enable[xi], 1'b0, clk); // Reset held low
-    end
+    logic [31:0][63:0] data_out;
+    // The generate loop makes all 31 writable registers without copying the same connections.
+    // Each register gets its own enable and output, while WriteData and clk are shared.
+    // Register 31 is left out because its value is always zero.
+    genvar i;
+    generate
+        for (i = 0; i < 31; i++) begin : reg_loop
+            register m (data_out[i], Register[i], WriteData, reset, clk);
+        end
+    endgenerate
 
-    // Two read muxes per bit
-    for (bi = 0; bi < 64; bi++) begin: gen_read_bits
-      wire [31:0] mux_in;
+    // Trying to write register 31 cannot change this fixed zero value.
+    assign data_out[31] = 64'b0; // Register 31 always reads zero.
 
-      for (xi = 0; xi < 32; xi++) begin: gen_mux_inputs
-        assign mux_in[xi] = registers[xi][bi]; // Same bit from all registers
-      end
-
-      mux32_1 read_mux1 (ReadData1[bi], mux_in, ReadRegister1);
-      mux32_1 read_mux2 (ReadData2[bi], mux_in, ReadRegister2);
-    end
-  endgenerate
+    // Both read ports use the same stored values, but each can choose a different address.
+    // The outputs update after the mux gates settle, without waiting for a clock edge.
+    mux_64by32by1 m1 (ReadData1, ReadRegister1, data_out);
+    mux_64by32by1 m2 (ReadData2, ReadRegister2, data_out);
 endmodule
