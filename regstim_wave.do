@@ -1,6 +1,29 @@
-onerror {resume}
-quietly WaveActivateNextPane {} 0
+# Run from the project folder: do regstim_wave.do
+onerror {abort}
+onbreak {resume}
+catch {quit -sim}
+
+# Create the simulation library and compile the sources.
+vlib work
+vlog -sv "./mux_8by1.sv"
+vlog -sv "./mux_32by1.sv"
+vlog -sv "./mux_64by32by1.sv"
+vlog -sv "./D_FF.sv"
+vlog -sv "./decoder_5by32.sv"
+vlog -sv "./Enable.sv"
+vlog -sv "./regfile.sv"
+vlog -sv "./decoder_3by8.sv"
+vlog -sv "./regstim.sv"
+vlog -sv "./register.sv"
+
+# Load the testbench before adding waveform signals.
+vsim -voptargs="+acc" -t 1ps -lib work regstim
+view wave
+view structure
+view signals
 delete wave *
+
+quietly WaveActivateNextPane {} 0
 
 # Add signals.
 add wave -noupdate -radix binary /regstim/clk
@@ -35,4 +58,7 @@ configure wave -timeline 0
 configure wave -timelineunits ns
 
 update
+
+# Run the simulation and show the full waveform.
+run -all
 wave zoom full

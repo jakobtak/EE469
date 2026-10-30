@@ -1,4 +1,20 @@
-onerror {resume}
+# Run from the project folder: do decoder_5by32_wave.do
+onerror {abort}
+onbreak {resume}
+catch {quit -sim}
+
+# Create the simulation library and compile the sources.
+vlib work
+vlog -sv "./decoder_5by32.sv"
+vlog -sv "./decoder_3by8.sv"
+
+# Load the testbench before adding waveform signals.
+vsim -voptargs="+acc" -t 1ps -lib work decoder_5by32_testbench
+view wave
+view structure
+view signals
+delete wave *
+
 quietly WaveActivateNextPane {} 0
 
 # Add signals.
@@ -29,4 +45,7 @@ configure wave -timeline 0
 configure wave -timelineunits ps
 
 update
-WaveRestoreZoom {63999248 ps} {64000040 ps}
+
+# Run the simulation and show the full waveform.
+run -all
+wave zoom full

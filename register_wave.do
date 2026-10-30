@@ -1,4 +1,28 @@
-onerror {resume}
+# Run from the project folder: do register_wave.do
+onerror {abort}
+onbreak {resume}
+catch {quit -sim}
+
+# Create the simulation library and compile the sources.
+vlib work
+vlog -sv "./mux_8by1.sv"
+vlog -sv "./mux_32by1.sv"
+vlog -sv "./mux_64by32by1.sv"
+vlog -sv "./D_FF.sv"
+vlog -sv "./decoder_5by32.sv"
+vlog -sv "./Enable.sv"
+vlog -sv "./regfile.sv"
+vlog -sv "./decoder_3by8.sv"
+vlog -sv "./regstim.sv"
+vlog -sv "./register.sv"
+
+# Load the testbench before adding waveform signals.
+vsim -voptargs="+acc" -t 1ps -lib work register_testbench
+view wave
+view structure
+view signals
+delete wave *
+
 quietly WaveActivateNextPane {} 0
 
 # Add signals.
@@ -32,4 +56,7 @@ configure wave -timeline 0
 configure wave -timelineunits ps
 
 update
-WaveRestoreZoom {0 ps} {1 ns}
+
+# The testbench keeps its clock running after the stimulus ends.
+run 30 us
+wave zoom full
