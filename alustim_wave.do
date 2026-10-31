@@ -19,24 +19,30 @@ view signals
 delete wave *
 
 add wave -noupdate -divider {Inputs}
-add wave -noupdate -radix hexadecimal /alustim/A
-add wave -noupdate -radix hexadecimal /alustim/B
+# Decimal displays two's-complement data as signed values.
+add wave -noupdate -radix decimal /alustim/A
+add wave -noupdate -radix decimal /alustim/B
 add wave -noupdate -radix binary /alustim/cntrl
 
 add wave -noupdate -divider {Result and flags}
-add wave -noupdate -radix hexadecimal /alustim/result
+add wave -noupdate -radix decimal /alustim/result
 add wave -noupdate /alustim/negative
 add wave -noupdate /alustim/zero
 add wave -noupdate /alustim/overflow
 add wave -noupdate /alustim/carry_out
 
 add wave -noupdate -divider {Shared adder}
-add wave -noupdate -radix hexadecimal /alustim/dut/add_sub_op/b_add
-add wave -noupdate -radix hexadecimal /alustim/dut/sum
-add wave -noupdate -radix hexadecimal /alustim/dut/add_sub_op/carry
+add wave -noupdate -radix decimal /alustim/dut/add_sub_op/b_add
+add wave -noupdate -radix decimal /alustim/dut/sum
+add wave -noupdate -radix binary /alustim/dut/add_sub_op/carry
+
+add wave -noupdate -divider {Bitwise operation results}
+add wave -noupdate -radix decimal /alustim/dut/and_out
+add wave -noupdate -radix decimal /alustim/dut/or_out
+add wave -noupdate -radix decimal /alustim/dut/xor_out
 
 configure wave -namecolwidth 240
-configure wave -valuecolwidth 180
+configure wave -valuecolwidth 220
 configure wave -timelineunits ns
 update
 
