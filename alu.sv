@@ -1,4 +1,4 @@
-`timescale 1ps/1ps
+`timescale 1ns/10ps
 
 // 64-bit ALU: pass B, add, subtract, AND, OR, and XOR.
 module alu (A, B, cntrl, result, negative, zero, overflow, carry_out);
@@ -88,4 +88,103 @@ module alu (A, B, cntrl, result, negative, zero, overflow, carry_out);
     // Use the carry leaving bit 63 when ADD or SUBTRACT is selected.
     // Subtraction computes A + ~B + 1, so carry_out = 1 means no borrow.
     and #50 carry_gate (carry_out, carry_raw, arithmetic);
-endmodule
+endmodule // alu
+
+
+module alu_testbench;
+	logic [63:0] result;
+	logic negative, zero, overflow, carry_out;
+	logic [63:0] A, B;
+	logic [2:0] cntrl;
+	logic [64:0] sum;
+	logic carry_r, overflow_r;
+	
+	alu dut (A, B, cntrl, result, negative, zero, overflow, carry_out);
+	
+	parameter delay = 100000;
+	
+	integer i;
+	initial begin
+		$display("%t testing PASS_B operations", $time);
+		cntrl[2] = 0;
+		cntrl[1] = 0;
+		cntrl[0] = 0;
+		for (i=0; i<100; i++) begin
+			A = {$random(), $random()}; B = {$random(), $random()};
+			#(delay);
+			if (result == B && negative == B[63] && zero == (B == '0))
+				$display("Pass");
+			else
+				$display("Fail");
+		end
+		
+		$display("%t testing ALU_ADD operations", $time);
+		cntrl[2] = 0;
+		cntrl[1] = 1;
+		cntrl[0] = 0;
+		for (i=0; i<100; i++) begin
+			A = {$random(), $random()}; B = {$random(), $random()};
+			sum = {1'b0, A} + {1'b0, B};
+			overflow_r = (A[63] == B[63]) && (sum[63] != A[63]);
+			#(delay);
+			if (result == (A + B) && negative == result[63] && zero == (result == '0) && carry_out == sum[64] && overflow == overflow_r)
+				$display("Pass");
+			else
+				$display("Fail");
+		end
+		
+		$display("%t testing ALU_SUBTRACT operations", $time);
+		cntrl[2] = 0;
+		cntrl[1] = 1;
+		cntrl[0] = 1;
+		for (i=0; i<100; i++) begin
+			A = {$random(), $random()}; B = {$random(), $random()};
+			sum = {1'b0, A} + {1'b0, ~B} + 65'd1;
+			overflow_r = (A[63] != B[63]) && (sum[63] != A[63]);
+			#(delay);
+			if (result == (A - B) && negative == result[63] && zero == (result == '0) && carry_out == sum[64] && overflow == overflow_r)
+				$display("Pass");
+			else
+				$display("Fail");
+		end
+		
+		$display("%t testing ALU_AND operations", $time);
+		cntrl[2] = 1;
+		cntrl[1] = 0;
+		cntrl[0] = 0;
+		for (i=0; i<100; i++) begin
+			A = {$random(), $random()}; B = {$random(), $random()};
+			#(delay);
+			if (result == (A & B) && negative == result[63] && zero == (result == '0))
+				$display("Pass");
+			else
+				$display("Fail");
+		end
+		
+		$display("%t testing ALU_OR operations", $time);
+		cntrl[2] = 1;
+		cntrl[1] = 0;
+		cntrl[0] = 1;
+		for (i=0; i<100; i++) begin
+			A = {$random(), $random()}; B = {$random(), $random()};
+			#(delay);
+			if (result == (A | B) && negative == result[63] && zero == (result == '0))
+				$display("Pass");
+			else
+				$display("Fail");
+		end
+		
+		$display("%t testing ALU_OR operations", $time);
+		cntrl[2] = 1;
+		cntrl[1] = 1;
+		cntrl[0] = 0;
+		for (i=0; i<100; i++) begin
+			A = {$random(), $random()}; B = {$random(), $random()};
+			#(delay);
+			if (result == (A ^ B) && negative == result[63] && zero == (result == '0))
+				$display("Pass");
+			else
+				$display("Fail");
+		end
+	end
+endmodule // alu_testbench

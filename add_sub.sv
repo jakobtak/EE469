@@ -1,4 +1,4 @@
-`timescale 1ps/1ps
+`timescale 1ns/10ps
 
 // Share 64 full adders for addition and subtraction.
 // sub = 0 keeps B and starts with carry 0 to compute A + B.

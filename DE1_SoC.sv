@@ -1,4 +1,4 @@
-`timescale 1ps/1ps
+`timescale 1ns/10ps
 
 // Empty board top for future labs.
 module DE1_SoC (CLOCK_50, reset, HEX0, HEX1, HEX2, HEX3, HEX4, HEX5, LEDR, V_GPIO);

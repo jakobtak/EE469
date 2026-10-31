@@ -1,4 +1,4 @@
-`timescale 1ps/1ps
+`timescale 1ns/10ps
 
 module D_FF (q, d, reset, clk);
   output reg q;

@@ -1,4 +1,4 @@
-`timescale 1ps/1ps
+`timescale 1ns/10ps
 
 // Add a, b, and carry_in to produce {carry_out, sum}.
 // XOR the three inputs to get sum. Generate a carry when a and b are both 1,
