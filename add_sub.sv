@@ -14,7 +14,7 @@ module add_sub (sum, carry_out, overflow, A, B, sub);
     wire [63:0] b_add;
     wire [64:0] carry;
 
-    xor #50 invert_b [63:0] (b_add, B, {64{sub}});
+    xor #(50ps) invert_b [63:0] (b_add, B, {64{sub}});
     assign carry[0] = sub;
 
     genvar i;
@@ -25,5 +25,5 @@ module add_sub (sum, carry_out, overflow, A, B, sub);
     endgenerate
 
     assign carry_out = carry[64];
-    xor #50 ov (overflow, carry[63], carry[64]);
+    xor #(50ps) ov (overflow, carry[63], carry[64]);
 endmodule

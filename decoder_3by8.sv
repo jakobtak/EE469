@@ -11,20 +11,20 @@ module decoder_3by8 (Register, Write_Register, RegWrite);
     wire R0, R1, R2, R3, R4, R5, R6, R7;
     wire nC, nD, nE;
 
-    not #50 nc (nC, Write_Register[2]);
-    not #50 nd (nD, Write_Register[1]);
-    not #50 ne (nE, Write_Register[0]);
+    not #(50ps) nc (nC, Write_Register[2]);
+    not #(50ps) nd (nD, Write_Register[1]);
+    not #(50ps) ne (nE, Write_Register[0]);
 
     // Each AND gate checks for one address using the input bits and their opposites.
     // After the gates settle, only the matching output is 1 when RegWrite is also 1.
-    and #50 r0 (R0, nC, nD, nE, RegWrite);
-    and #50 r1 (R1, nC, nD, Write_Register[0], RegWrite);
-    and #50 r2 (R2, nC, Write_Register[1], nE, RegWrite);
-    and #50 r3 (R3, nC, Write_Register[1], Write_Register[0], RegWrite);
-    and #50 r4 (R4, Write_Register[2], nD, nE, RegWrite);
-    and #50 r5 (R5, Write_Register[2], nD, Write_Register[0], RegWrite);
-    and #50 r6 (R6, Write_Register[2], Write_Register[1], nE, RegWrite);
-    and #50 r7 (R7, Write_Register[2], Write_Register[1], Write_Register[0], RegWrite);
+    and #(50ps) r0 (R0, nC, nD, nE, RegWrite);
+    and #(50ps) r1 (R1, nC, nD, Write_Register[0], RegWrite);
+    and #(50ps) r2 (R2, nC, Write_Register[1], nE, RegWrite);
+    and #(50ps) r3 (R3, nC, Write_Register[1], Write_Register[0], RegWrite);
+    and #(50ps) r4 (R4, Write_Register[2], nD, nE, RegWrite);
+    and #(50ps) r5 (R5, Write_Register[2], nD, Write_Register[0], RegWrite);
+    and #(50ps) r6 (R6, Write_Register[2], Write_Register[1], nE, RegWrite);
+    and #(50ps) r7 (R7, Write_Register[2], Write_Register[1], Write_Register[0], RegWrite);
 
     assign Register[0] = R0;
     assign Register[1] = R1;

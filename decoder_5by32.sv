@@ -11,15 +11,15 @@ module decoder_5by32 (Register, Write_Register, RegWrite);
     wire nA, nB;
     wire d1, d2, d3, d4;
 
-    not #50 na (nA, Write_Register[4]);
-    not #50 nb (nB, Write_Register[3]);
+    not #(50ps) na (nA, Write_Register[4]);
+    not #(50ps) nb (nB, Write_Register[3]);
 
     // Bits [4:3] choose which of d1 through d4 is turned on.
     // If RegWrite is 0, all four groups stay off, so no register gets written.
-    and #50 D1 (d1, nA, nB, RegWrite);
-    and #50 D2 (d2, nA, Write_Register[3], RegWrite);
-    and #50 D3 (d3, Write_Register[4], nB, RegWrite);
-    and #50 D4 (d4, Write_Register[4], Write_Register[3], RegWrite);
+    and #(50ps) D1 (d1, nA, nB, RegWrite);
+    and #(50ps) D2 (d2, nA, Write_Register[3], RegWrite);
+    and #(50ps) D3 (d3, Write_Register[4], nB, RegWrite);
+    and #(50ps) D4 (d4, Write_Register[4], Write_Register[3], RegWrite);
 
     // All four decoders get the same bottom three address bits, but only one group is enabled.
     // Their outputs cover registers 0-7, 8-15, 16-23, and 24-31.

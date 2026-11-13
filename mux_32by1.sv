@@ -13,16 +13,16 @@ module mux_32by1 (ReadData, ReadRegister, data_out);
     logic [63:0] y1, y2, y3, y4;
 
     // add by pass gate to match the NOT delay on each non-inverted address bit.
-    buf #50 buffer [4:0] (buffered, ReadRegister);
-    not #50 Inverted4 (inverted4, ReadRegister[4]);
-    not #50 Inverted3 (inverted3, ReadRegister[3]);
+    buf #(50ps) buffer [4:0] (buffered, ReadRegister);
+    not #(50ps) Inverted4 (inverted4, ReadRegister[4]);
+    not #(50ps) Inverted3 (inverted3, ReadRegister[3]);
 
     // The top two address bits turn on one of the four groups.
     // After the gates settle, only that group is allowed to send out data.
-    and #50 mux_1 (mux1, inverted4, inverted3);
-    and #50 mux_2 (mux2, inverted4, buffered[3]);
-    and #50 mux_3 (mux3, buffered[4], inverted3);
-    and #50 mux_4 (mux4, buffered[4], buffered[3]);
+    and #(50ps) mux_1 (mux1, inverted4, inverted3);
+    and #(50ps) mux_2 (mux2, inverted4, buffered[3]);
+    and #(50ps) mux_3 (mux3, buffered[4], inverted3);
+    and #(50ps) mux_4 (mux4, buffered[4], buffered[3]);
 
     // Each small mux looks at the same position in a different group of eight values.
     // Only the enabled group passes its value through; the other groups send out zero.
@@ -33,7 +33,7 @@ module mux_32by1 (ReadData, ReadRegister, data_out);
 
     // The OR gates put the four outputs together, one bit at a time.
     // Since the other groups send out zero, the result is just the value from the selected group.
-    or #50 orout [63:0] (ReadData, y1, y2, y3, y4);
+    or #(50ps) orout [63:0] (ReadData, y1, y2, y3, y4);
 endmodule
 
 // This gives each input its address as a value, then reads all 32 addresses.

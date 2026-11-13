@@ -10,9 +10,9 @@ module full_adder (sum, carry_out, a, b, carry_in);
 
     wire a_xor_b, ab, carry_ab;
 
-    xor #50 x1 (a_xor_b, a, b);
-    xor #50 x2 (sum, a_xor_b, carry_in);
-    and #50 a1 (ab, a, b);
-    and #50 a2 (carry_ab, a_xor_b, carry_in);
-    or #50 o1 (carry_out, ab, carry_ab);
+    xor #(50ps) x1 (a_xor_b, a, b);
+    xor #(50ps) x2 (sum, a_xor_b, carry_in);
+    and #(50ps) a1 (ab, a, b);
+    and #(50ps) a2 (carry_ab, a_xor_b, carry_in);
+    or #(50ps) o1 (carry_out, ab, carry_ab);
 endmodule

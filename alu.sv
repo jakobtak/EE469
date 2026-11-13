@@ -19,15 +19,15 @@ module alu (A, B, cntrl, result, negative, zero, overflow, carry_out);
 
     // AND ====================================
     // Control 100: each output bit is 1 when both corresponding input bits are 1.
-    and #50 bit_and [63:0] (and_out, A, B);
+    and #(50ps) bit_and [63:0] (and_out, A, B);
 
     // OR ====================================
     // Control 101: each output bit is 1 when either corresponding input bit is 1.
-    or #50 bit_or [63:0] (or_out, A, B);
+    or #(50ps) bit_or [63:0] (or_out, A, B);
 
     // XOR ====================================
     // Control 110: each output bit is 1 when the corresponding input bits differ.
-    xor #50 bit_xor [63:0] (xor_out, A, B);
+    xor #(50ps) bit_xor [63:0] (xor_out, A, B);
 
     // PASS B ====================================
     // Control 000: connect B directly to the first MUX input so it can be
@@ -62,32 +62,32 @@ module alu (A, B, cntrl, result, negative, zero, overflow, carry_out);
     genvar i;
     generate
         for (i = 0; i < 16; i++) begin : zero_groups
-            or #50 g (zero_group[i], result[4*i], result[4*i+1],
+            or #(50ps) g (zero_group[i], result[4*i], result[4*i+1],
                       result[4*i+2], result[4*i+3]);
         end
         for (i = 0; i < 4; i++) begin : zero_blocks
-            or #50 g (zero_block[i], zero_group[4*i], zero_group[4*i+1],
+            or #(50ps) g (zero_block[i], zero_group[4*i], zero_group[4*i+1],
                       zero_group[4*i+2], zero_group[4*i+3]);
         end
     endgenerate
-    nor #50 zero_gate (zero, zero_block[0], zero_block[1], zero_block[2], zero_block[3]);
+    nor #(50ps) zero_gate (zero, zero_block[0], zero_block[1], zero_block[2], zero_block[3]);
 
     // ARITHMETIC FLAG ENABLE ====================================
     // Only control codes 010 and 011 have cntrl[2] = 0 and cntrl[1] = 1.
     // Detect these codes to enable the adder flags for ADD/SUB and make
     // overflow and carry_out zero for the other operations.
     wire not_cntrl2, arithmetic;
-    not #50 n2 (not_cntrl2, cntrl[2]);
-    and #50 arith (arithmetic, not_cntrl2, cntrl[1]);
+    not #(50ps) n2 (not_cntrl2, cntrl[2]);
+    and #(50ps) arith (arithmetic, not_cntrl2, cntrl[1]);
 
     // OVERFLOW ====================================
     // Use the adder's signed-overflow result when ADD or SUBTRACT is selected.
-    and #50 overflow_gate (overflow, overflow_raw, arithmetic);
+    and #(50ps) overflow_gate (overflow, overflow_raw, arithmetic);
 
     // CARRY OUT ====================================
     // Use the carry leaving bit 63 when ADD or SUBTRACT is selected.
     // Subtraction computes A + ~B + 1, so carry_out = 1 means no borrow.
-    and #50 carry_gate (carry_out, carry_raw, arithmetic);
+    and #(50ps) carry_gate (carry_out, carry_raw, arithmetic);
 endmodule // alu
 
 
