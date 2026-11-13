@@ -10,23 +10,32 @@ module decoder_5by32 (Register, Write_Register, RegWrite);
 
     wire nA, nB;
     wire d1, d2, d3, d4;
+    wire [4:0] buffered;
+    wire rw_buffered;
 
+    // Hazard fix: add bypass gates to match the NOT delay on the address bits and RegWrite.
+    // Every input now takes 50ps to reach the group AND gates, so d1-d4 change at 100ps.
+    // The bottom three bits also reach 100ps inside decoder_3by8 (this buffer plus its own
+    // buffer or NOT), so the group enable and the address arrive at the last AND together.
+    // Before this, the enables of several registers could be 1 at once for a short time.
+    buf #(50ps) buffer [4:0] (buffered, Write_Register);
+    buf #(50ps) rw_buffer (rw_buffered, RegWrite);
     not #(50ps) na (nA, Write_Register[4]);
     not #(50ps) nb (nB, Write_Register[3]);
 
     // Bits [4:3] choose which of d1 through d4 is turned on.
     // If RegWrite is 0, all four groups stay off, so no register gets written.
-    and #(50ps) D1 (d1, nA, nB, RegWrite);
-    and #(50ps) D2 (d2, nA, Write_Register[3], RegWrite);
-    and #(50ps) D3 (d3, Write_Register[4], nB, RegWrite);
-    and #(50ps) D4 (d4, Write_Register[4], Write_Register[3], RegWrite);
+    and #(50ps) D1 (d1, nA, nB, rw_buffered);
+    and #(50ps) D2 (d2, nA, buffered[3], rw_buffered);
+    and #(50ps) D3 (d3, buffered[4], nB, rw_buffered);
+    and #(50ps) D4 (d4, buffered[4], buffered[3], rw_buffered);
 
     // All four decoders get the same bottom three address bits, but only one group is enabled.
     // Their outputs cover registers 0-7, 8-15, 16-23, and 24-31.
-    decoder_3by8 V1 (Register[7:0], Write_Register[2:0], d1);
-    decoder_3by8 V2 (Register[15:8], Write_Register[2:0], d2);
-    decoder_3by8 V3 (Register[23:16], Write_Register[2:0], d3);
-    decoder_3by8 V4 (Register[31:24], Write_Register[2:0], d4);
+    decoder_3by8 V1 (Register[7:0], buffered[2:0], d1);
+    decoder_3by8 V2 (Register[15:8], buffered[2:0], d2);
+    decoder_3by8 V3 (Register[23:16], buffered[2:0], d3);
+    decoder_3by8 V4 (Register[31:24], buffered[2:0], d4);
 endmodule
 
 // This goes through all 32 addresses with writing off, then repeats with writing on.

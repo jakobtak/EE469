@@ -8,12 +8,14 @@ module Enable (data_out, Register, WriteData, reset, clk);
     input logic WriteData;
     input logic Register, reset, clk; // Register turns writing on or off.
 
-    wire change, hold, din, buffered;
+    wire change, hold, din, buffered, not_register;
 
     // One AND gate passes the new data, and the other passes the old data back in.
     // The OR gate sends the chosen value to din, which needs to settle before the clock edge.
+    not #(50ps) n (not_register, Register);
     and #(50ps) c (change, WriteData, Register); // Use the new data.
-    and #(50ps) h (hold, data_out, !Register);  // Keep the old data.
+    and #(50ps) h (hold, data_out, not_register);  // Keep the old data.
+    // The buffer matches the NOT delay on the hold path so both paths reach the OR together.
     buf #(50ps) buffer (buffered, change);
     or #(50ps) new_data (din, buffered, hold);
     D_FF ff (data_out, din, reset, clk);

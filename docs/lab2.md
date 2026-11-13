@@ -53,17 +53,15 @@ def full_adder(a, b, carry_in):
 
 For example, `1 + 1 + 1 = 3`, or binary `11`, so both `sum_bit` and `carry_out` are `1`.
 
-Next, choose gates that produce the same outputs. `total % 2` is 1 when an odd number of inputs are 1, which gives the XOR expression for `sum`. `total // 2` is 1 when at least two inputs are 1: either both `a` and `b` are 1, or exactly one of them is 1 and `carry_in` is also 1. AND gates detect these two carry conditions, and an OR gate combines them.
+Next, choose gates that produce the same outputs. `total % 2` is 1 when an odd number of inputs are 1, which gives the XOR expression for `sum`. `total // 2` is 1 when at least two inputs are 1. One AND gate per pair of inputs detects each case, and an OR gate combines them.
 
 ```text
 p         = a XOR b
 sum       = p XOR carry_in
-carry_out = (a AND b) OR (p AND carry_in)
+carry_out = (a AND b) OR (a AND carry_in) OR (b AND carry_in)
 ```
 
-Reusing `p` gives the two XOR gates, two AND gates, and one OR gate implemented in `full_adder.sv`.
-
-![One-bit full adder built from XOR, AND, and OR gates](lab2_full_adder.png)
+This gives the two XOR gates, three AND gates, and one OR gate implemented in `full_adder.sv`.
 
 #### Addition and Subtraction
 
@@ -151,6 +149,4 @@ The three-bit `cntrl` signal selects one of the eight MUX inputs as the 64-bit r
 
 #### Flags
 
-`negative` comes from the result's sign bit, and `zero` is 1 only when all result bits are 0. `overflow` and `carry_out` use the shared adder's flags for ADD/SUB and are set to 0 for other operations.
-
-![Negative, zero, overflow, and carry-out flag logic](lab2_flags.png)
+`negative` comes from the result's sign bit, and `zero` is 1 only when all result bits are 0. `overflow` and `carry_out` use the shared adder's flags for ADD/SUB and are set to 0 for other operations. The enable for these two flags is `NOT cntrl[2] AND cntrl[1]`; `cntrl[1]` passes through a buffer so it arrives together with the inverted `cntrl[2]`.

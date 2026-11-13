@@ -1,25 +1,13 @@
 `timescale 1ns/10ps
 
-// This puts together the 64-bit read result using copies of mux_32by1.
-// Each copy gets the same read address and the same register values.
-// The output takes one bit from each copy to make the full ReadData value.
+// Select one of 32 64-bit words using a single mux_32by1.
+// mux_32by1 already produces the complete 64-bit read result.
 module mux_64by32by1 (ReadData, ReadRegister, data_out);
     output logic [63:0] ReadData;
     input logic [4:0] ReadRegister;
     input logic [31:0][63:0] data_out;
 
-    // The generate loop makes these copies before the simulation starts.
-    // Each copy has its own full_out signal inside reg_loop.
-    // This saves typing the same connections, but each copy still makes a full 64-bit value.
-    genvar i;
-    generate
-        for (i = 0; i < 64; i++) begin : reg_loop
-            // Each mux gives a full 64-bit result, but this copy only uses bit i.
-            logic [63:0] full_out;
-            mux_32by1 m32 (full_out, ReadRegister, data_out);
-            assign ReadData[i] = full_out[i]; // Take one bit from each mux.
-        end
-    endgenerate
+    mux_32by1 m32 (ReadData, ReadRegister, data_out);
 endmodule
 
 // This fills the inputs with their address values, then tries every read address.

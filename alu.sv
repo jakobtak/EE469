@@ -76,9 +76,14 @@ module alu (A, B, cntrl, result, negative, zero, overflow, carry_out);
     // Only control codes 010 and 011 have cntrl[2] = 0 and cntrl[1] = 1.
     // Detect these codes to enable the adder flags for ADD/SUB and make
     // overflow and carry_out zero for the other operations.
-    wire not_cntrl2, arithmetic;
+    //
+    // Hazard fix: add a bypass gate to match the NOT delay on cntrl[2].
+    // Without it, a change such as 000 -> 110 let cntrl[1] arrive 50ps before
+    // not_cntrl2 fell, so arithmetic (and the two flags) pulsed to 1.
+    wire not_cntrl2, cntrl1_buffered, arithmetic;
     not #(50ps) n2 (not_cntrl2, cntrl[2]);
-    and #(50ps) arith (arithmetic, not_cntrl2, cntrl[1]);
+    buf #(50ps) b1 (cntrl1_buffered, cntrl[1]);
+    and #(50ps) arith (arithmetic, not_cntrl2, cntrl1_buffered);
 
     // OVERFLOW ====================================
     // Use the adder's signed-overflow result when ADD or SUBTRACT is selected.
