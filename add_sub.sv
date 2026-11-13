@@ -5,6 +5,14 @@
 // sub = 1 inverts B and starts with carry 1 to compute A + ~B + 1 = A - B.
 // Each bit passes its carry to the next bit; the final carry becomes carry_out.
 // XOR the carries entering and leaving the sign bit to detect signed overflow.
+//
+// Delay (50 ps per gate):
+//   Worst case: the carry passes through all 64 bits, starting from B or sub.
+//   B or sub -> carry[i]  : XOR (50 ps) + i x 100 ps
+//   B or sub -> sum[63]   : carry[63] (6,350 ps) + XOR = 6,400 ps
+//   B or sub -> carry_out : carry[64] = 6,450 ps
+//   B or sub -> overflow  : carry[64] + XOR = 6,500 ps
+//   Starting from A skips the first XOR, so each value is 50 ps less.
 module add_sub (sum, carry_out, overflow, A, B, sub);
     output wire [63:0] sum;
     output wire carry_out, overflow;

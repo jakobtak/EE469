@@ -3,6 +3,11 @@
 // This puts four 3-to-8 decoders together to handle all 32 register addresses.
 // The top two address bits pick a group of eight, and the bottom three pick a register in it.
 // Using the smaller decoder keeps the same address logic from being written over and over.
+//
+// Delay (50 ps per gate):
+//   Write_Register[4:3] -> Register : BUF/NOT + AND + AND (in decoder_3by8) = 150 ps
+//   Write_Register[2:0] -> Register : BUF + decoder_3by8 (100 ps) = 150 ps
+//   RegWrite            -> Register : BUF + AND + AND (in decoder_3by8) = 150 ps
 module decoder_5by32 (Register, Write_Register, RegWrite);
     output logic [31:0] Register; // One bit for each register enable.
     input logic [4:0] Write_Register;

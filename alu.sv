@@ -1,6 +1,16 @@
 `timescale 1ns/10ps
 
 // 64-bit ALU: pass B, add, subtract, AND, OR, and XOR.
+//
+// Delay (50 ps per gate):
+//   ADD/SUB (worst case, carry through all 64 bits):
+//     result, negative : add_sub sum (6,400 ps) + result MUX data (150 ps) = 6,550 ps
+//     zero             : result (6,550 ps) + OR + OR + NOR = 6,700 ps
+//     carry_out        : add_sub carry_out (6,450 ps) + AND = 6,500 ps
+//     overflow         : add_sub overflow (6,500 ps) + AND = 6,550 ps
+//   AND/OR/XOR: result = gate + MUX data (150 ps) = 200 ps, zero = 350 ps
+//   PASS B:     result = MUX data = 150 ps, zero = 300 ps
+//   cntrl -> result : MUX select = 250 ps
 module alu (A, B, cntrl, result, negative, zero, overflow, carry_out);
     input logic [63:0] A, B;
     input logic [2:0] cntrl;

@@ -8,6 +8,11 @@
 // When all inputs were 1 and a or b dropped to 0, the first term turned off after 50ps
 // but the second needed 100ps to turn on, so carry_out fell to 0 for 50ps.
 // With one AND per pair, a single input change always leaves one term at 1.
+//
+// Delay (50 ps per gate):
+//   a or b   -> sum       : XOR + XOR = 100 ps
+//   carry_in -> sum       : XOR = 50 ps
+//   any      -> carry_out : AND + OR = 100 ps
 module full_adder (sum, carry_out, a, b, carry_in);
     output wire sum, carry_out;
     input logic a, b, carry_in;

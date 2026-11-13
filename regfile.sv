@@ -3,6 +3,13 @@
 // This holds 32 register values, with 64 bits in each one.
 // The decoder picks where to write, and the two read muxes pick which values to read.
 // Register 31 always reads as zero, so only the other 31 registers need storage.
+//
+// Delay (50 ps per gate):
+//   Read:  ReadRegister -> ReadData : mux_64by32by1 select = 350 ps
+//          saved value  -> ReadData : mux_64by32by1 data = 200 ps
+//   Write: WriteRegister or RegWrite -> D_FF input : decoder (150 ps) + Enable (150 ps) = 300 ps
+//          WriteData                 -> D_FF input : Enable = 150 ps
+//   The write inputs must settle this long before the rising clock edge.
 module regfile (
     ReadData1, ReadData2, WriteData,
     ReadRegister1, ReadRegister2, WriteRegister, RegWrite, clk

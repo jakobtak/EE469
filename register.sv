@@ -3,6 +3,10 @@
 // This puts 64 Enable modules together to make one 64-bit register.
 // They all use the same enable, reset, and clock, so the bits are controlled together.
 // Using the one-bit module keeps the save-or-hold logic in one place.
+//
+// Delay (50 ps per gate):
+//   Same as one Enable, since the 64 bits work side by side.
+//   WriteData or Register -> D_FF input : 150 ps
 module register (data_out, Register, WriteData, reset, clk);
     output logic [63:0] data_out;
     input logic [63:0] WriteData;

@@ -3,6 +3,11 @@
 // This uses four mux_8by1 modules to choose one of the 32 register values.
 // ReadRegister[4:3] picks a group of eight, and ReadRegister[2:0] picks a value inside it.
 // Splitting it up this way lets the larger mux reuse the smaller one.
+//
+// Delay (50 ps per gate):
+//   ReadRegister[2:0] -> ReadData : BUF + mux_8by1 select (250 ps) + OR = 350 ps
+//   ReadRegister[4:3] -> ReadData : BUF/NOT + AND + mux_8by1 muxx (200 ps) + OR = 350 ps
+//   data_out          -> ReadData : mux_8by1 data (150 ps) + OR = 200 ps
 module mux_32by1 (ReadData, ReadRegister, data_out);
     output wire [63:0] ReadData;
     input logic [4:0] ReadRegister;

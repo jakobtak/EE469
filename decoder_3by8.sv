@@ -3,6 +3,10 @@
 // This uses a three-bit address to choose which of eight registers can be written.
 // If RegWrite is 0, none of the registers are selected.
 // The larger decoder uses four copies of this module, one for each group of eight.
+//
+// Delay (50 ps per gate):
+//   Write_Register -> Register : BUF/NOT + AND = 100 ps
+//   RegWrite       -> Register : AND = 50 ps
 module decoder_3by8 (Register, Write_Register, RegWrite);
     output logic [7:0] Register; // One bit for each register enable.
     input logic [2:0] Write_Register;

@@ -3,6 +3,12 @@
 // This lets a D_FF either save new data or keep what it already has.
 // When Register is 1, it uses WriteData. When Register is 0, it keeps data_out.
 // The 64-bit register uses one copy of this module for each bit.
+//
+// Delay (50 ps per gate):
+//   WriteData -> din : AND + BUF + OR = 150 ps
+//   Register  -> din : AND + BUF + OR = 150 ps, or NOT + AND + OR = 150 ps
+//   data_out  -> din : AND + OR = 100 ps
+//   din must settle before the rising clock edge. The D_FF itself has no delay.
 module Enable (data_out, Register, WriteData, reset, clk);
     output logic data_out;
     input logic WriteData;

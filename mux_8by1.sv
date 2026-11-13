@@ -3,6 +3,11 @@
 // This picks one of eight 64-bit values using ReadRegister.
 // When muxx is 0, the output becomes zero after the gates have time to update.
 // The larger 32-to-1 mux uses four copies of this module to cover all 32 registers.
+//
+// Delay (50 ps per gate):
+//   ReadRegister -> ReadData : BUF/NOT + AND + AND + OR + OR = 250 ps
+//   muxx         -> ReadData : AND + AND + OR + OR = 200 ps
+//   data_out     -> ReadData : AND + OR + OR = 150 ps
 module mux_8by1 (ReadData, ReadRegister, data_out, muxx);
     output logic [63:0] ReadData;
     input logic [2:0] ReadRegister;

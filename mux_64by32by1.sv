@@ -2,6 +2,11 @@
 
 // Select one of 32 64-bit words using a single mux_32by1.
 // mux_32by1 already produces the complete 64-bit read result.
+//
+// Delay (50 ps per gate):
+//   Same as mux_32by1, since this only wraps one copy.
+//   ReadRegister -> ReadData : 350 ps
+//   data_out     -> ReadData : 200 ps
 module mux_64by32by1 (ReadData, ReadRegister, data_out);
     output logic [63:0] ReadData;
     input logic [4:0] ReadRegister;
